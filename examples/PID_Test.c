@@ -1,3 +1,10 @@
+/*
+ * PID_Test.c
+ *
+ *		Revision Date: 13/01/2021
+ *		Author: Talha
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <PID.h>
@@ -5,29 +12,15 @@
 #define PID_KP 2.0f
 #define PID_KD 0.5f
 #define PID_KI 0.25f
-#define PID_TAU 0.02f
-#define PID_LIM_MIN -10.0f
-#define PID_LIM_MAX  10.0f
-#define PID_LIM_MIN_INT -5.0f
-#define PID_LIM_MAX_INT  5.0f
-#define SAMPLE_TIME_S 0.01f
-#define SIMULATION_TIME_MAX 4.0f
 
 float TestSim_Update(float inp);
 
 int main()
 {
-    PIDController pid = { 
-        PID_KP, PID_KD, PID_KI,
-        PID_TAU,
-        PID_LIM_MAX, PID_LIM_MIN,
-        PID_LIM_MAX_INT, PID_LIM_MIN_INT,
-        SAMPLE_TIME_S
-     };
 
-    PIDController_Init(&pid);
+    PIDController_Init(&pid, PID_KP, PID_KI, PID_KD);
 
-    float setpoint = 1.0f;
+    uint16_t setpoint = 21;
 
     printf("T (s)\tSystem Out\tPID Out\r\n");
     for (float t = 0.0f; t <= SIMULATION_TIME_MAX; t += SAMPLE_TIME_S)
