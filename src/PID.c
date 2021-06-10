@@ -1,13 +1,17 @@
-/*
- * PID.c
- *
- *		Revision Date: 13/01/2021
- *		Author: Talha
+/**
+ * @file PID.c
+ * @author Talha Sarı (talha.sari@outlook.com.tr)
+ * @brief PID Controller for Discrete Time Systems
+ * @version v1.1
+ * @date 2021-06-10
+ * 
+ * @copyright Copyright (c) 2021
+ * 
  */
 
 #include "PID.h"
 
-void PIDController_Init(PIDController *pid, float kp, float ki, float kd)
+void PID_Init(PID_t *pid, float kp, float ki, float kd, float Ts)
 {
 	pid->Kp = kp;
 	pid->Ki = ki;
@@ -17,7 +21,7 @@ void PIDController_Init(PIDController *pid, float kp, float ki, float kd)
 	pid->limMax = PID_LIM_MAX;
 	pid->limMinInt = PID_LIM_MIN_INT;
 	pid->limMaxInt = PID_LIM_MAX_INT;
-	pid->T = SAMPLE_TIME_S;
+	pid->T = Ts;
 
 	pid->integrator = 0.0f;
 	pid->prevError = 0.0f;
@@ -26,7 +30,7 @@ void PIDController_Init(PIDController *pid, float kp, float ki, float kd)
 	pid->out = 0.0f;
 }
 
-int16_t PIDKontrolcu_Update(PIDKontrolcu_t *pid, uint16_t setPoint, uint16_t measurement);
+float PID_Update(PID_t *pid, float setPoint, float measurement)
 {
 	//Hata
 	float error = setPoint - measurement;
@@ -59,5 +63,18 @@ int16_t PIDKontrolcu_Update(PIDKontrolcu_t *pid, uint16_t setPoint, uint16_t mea
 	pid->prevError = error;
 	pid->prevMeasurement = measurement;
 
-	return (int16_t)pid->out;
+	return pid->out;
+}
+
+void PID_SetLimits(PID_t *pid, float outLimMin, float outLimMax, float intLimMin, float intLimMax)
+{
+	pid->limMin = outLimMin;
+	pid->limMax = outLimMax;
+	pid->limMinInt = intLimMin;
+	pid->limMaxInt = intLimMax;
+}
+
+void PID_SetDerivativeFilter(PID_t *pid, float tau)
+{
+	pid->tau = tau;
 }
